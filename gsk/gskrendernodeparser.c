@@ -1791,18 +1791,36 @@ parse_fill_node (GtkCssParser *parser)
   return result;
 }
 
+static gboolean
+parse_line_cap (GtkCssParser *parser,
+                gpointer      out)
+{
+  return parse_enum (parser, GSK_TYPE_LINE_CAP, out);
+}
+
+static gboolean
+parse_line_join (GtkCssParser *parser,
+                 gpointer      out)
+{
+  return parse_enum (parser, GSK_TYPE_LINE_JOIN, out);
+}
+
 static GskRenderNode *
 parse_stroke_node (GtkCssParser *parser)
 {
   GskRenderNode *child = NULL;
   GskPath *path = NULL;
   double line_width = 1.0;
+  double line_cap = GSK_LINE_CAP_BUTT;
+  double line_join = GSK_LINE_JOIN_MITER;
   GskStroke *stroke;
 
   const Declaration declarations[] = {
     { "child", parse_node, clear_node, &child },
     { "path", parse_path, NULL, &path },
     { "line-width", parse_double, NULL, &line_width },
+    { "line-cap", parse_line_cap, NULL, &line_cap },
+    { "line-join", parse_line_join, NULL, &line_join },
   };
   GskRenderNode *result;
 
@@ -1811,6 +1829,8 @@ parse_stroke_node (GtkCssParser *parser)
     child = create_default_render_node ();
 
   stroke = gsk_stroke_new (line_width);
+  gsk_stroke_set_line_cap (stroke, line_cap);
+  gsk_stroke_set_line_join (stroke, line_join);
 
   result = gsk_stroke_node_new (child, path, stroke);
 
@@ -2565,6 +2585,9 @@ render_node_print (Printer       *p,
 
         stroke = gsk_stroke_node_get_stroke (node);
         append_float_param (p, "line-width", gsk_stroke_get_line_width (stroke), 0.0);
+
+        append_enum_param (p, "line-cap", GSK_TYPE_LINE_CAP, gsk_stroke_get_line_cap (stroke));
+        append_enum_param (p, "line-join", GSK_TYPE_LINE_JOIN, gsk_stroke_get_line_join (stroke));
 
         end_node (p);
       }
