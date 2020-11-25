@@ -60,6 +60,9 @@ GDK_AVAILABLE_IN_ALL
 GskPath *               gsk_path_new_from_cairo                 (const cairo_path_t   *path);
 
 GDK_AVAILABLE_IN_ALL
+GskPath *               gsk_path_new_from_string                (const char *string);
+
+GDK_AVAILABLE_IN_ALL
 GskPath *               gsk_path_ref                            (GskPath              *self);
 GDK_AVAILABLE_IN_ALL
 void                    gsk_path_unref                          (GskPath              *self);
@@ -83,6 +86,7 @@ GDK_AVAILABLE_IN_ALL
 gboolean                gsk_path_foreach                        (GskPath              *path,
                                                                  GskPathForeachFunc    func,
                                                                  gpointer              user_data);
+
 
 #define GSK_TYPE_PATH_BUILDER (gsk_path_builder_get_type ())
 
